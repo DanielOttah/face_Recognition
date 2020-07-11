@@ -37,6 +37,15 @@ class App extends React.Component {
       boundary: {},
       route: 'signIn',
       isSignedIn: false,
+      showError: "none",
+      user: {
+        id: '123',
+        name: 'John',
+        email: 'john@gmail.com',
+        entries: 0,
+        joined: "new Date()"
+
+      }
     }
   }
 
@@ -66,19 +75,36 @@ class App extends React.Component {
   }
 
   handleDetect = () => {
-
     this.setState({
       imageURL: this.state.input
     })
 
     //Clarifai API call code 
     app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
-      .then(response => this.displayFaceBox(this.calculateFaceLocation(response)))
-      .catch(err => console.log(err));
+      .then(response => {
+        if (response) { //retrieve the entries of the user
+          fetch(`http://localhost:3000/image`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: this.state.user.id
+            })
+          })
+            .then(response => response.json())
+            .then(res => {
+              this.setState(Object.assign(this.state.user, { entries: res }))
+            })
+        }
+        this.displayFaceBox(this.calculateFaceLocation(response))
+      })
+      .catch(err => this.setState({ showError: "block" }));
+
+
   }
 
   onRouteChange = (route) => {
     if (route === 'signOut') {
+
       this.setState({
         isSignedIn: false
       })
@@ -92,6 +118,20 @@ class App extends React.Component {
     })
   }
 
+  loadUser = (newUser) => {
+
+    this.setState({
+      user: {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        entries: newUser.entries,
+        joined: newUser.joined
+
+      }
+    })
+  }
+
   render() {
     const { isSignedIn, imageURL, boundary, input, route } = this.state;
     return (
@@ -102,14 +142,14 @@ class App extends React.Component {
         <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} />
         {route === 'home' ?
           <div>
-            <Logo />
-            <Rank />
+            <Logo name={this.state.user.name} email={this.state.user.email} entries={this.state.user.entries} />
+            <Rank name={this.state.user.name} entries={this.state.user.entries} />
             <ImageLinkForm handleDetect={this.handleDetect} handleOnChange={this.handleInput} inputValue={input} />
-            <FaceRecognition image={imageURL} boundary={boundary} />
+            <FaceRecognition image={imageURL} boundary={boundary} showError={this.state.showError} />
           </div> :
           (route === 'signIn') ?
-            <SignIn onRouteChange={this.onRouteChange} />
-            : <Register onRouteChange={this.onRouteChange} />
+            <SignIn onRouteChange={this.onRouteChange} loadUser={this.loadUser} />
+            : <Register onRouteChange={this.onRouteChange} loadUser={this.loadUser} />
         }
 
       </div>

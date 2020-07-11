@@ -15,3 +15,11 @@
     left: 0;
     z-index: -1;
 }
+
+.errorMessage {
+    background-color: rgb(187, 15, 15);
+    color: white;
+    border-radius: 3;
+    font: 1em sans-serif;
+    font-size: small;
+}

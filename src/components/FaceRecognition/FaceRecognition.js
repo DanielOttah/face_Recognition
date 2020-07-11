@@ -6,6 +6,7 @@ const FaceRecognition = (props) => {
     return (
         <div className="center ma">
             <div className="absolute mt2">
+                <span className="errorMessage" style={{ display: props.showError }}>Error displaying facial recognition</span>
                 <img id='inputImage' alt=" " src={props.image} width='500px' height='auto' />
 
                 <div className="bounding-box" style={{
