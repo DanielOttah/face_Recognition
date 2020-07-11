@@ -9,7 +9,7 @@ class Logo extends React.Component {
             <div className="ma4 mt0 " >
                 {/* <Tilt className="Tilt br2 shadow-2" options={{ max: 60 }} style={{ height: 150, width: 150 }} >
                 </Tilt> */}
-                <div className="Tilt-inner pa3">
+                <div className="pa3">
                     <div>
                         <img style={{ paddingTop: '5px' }} alt='logo' src={face} />
                     </div>

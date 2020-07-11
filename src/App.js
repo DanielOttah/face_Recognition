@@ -6,7 +6,7 @@ import SignIn from './components/SignIn/SignIn.js';
 import Register from './components/Register/Register.js';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition.js';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm.js';
-import Rank from './components/Rank/Rank.js';
+// import Rank from './components/Rank/Rank.js';
 import Particles from 'react-particles-js';
 import Clarifai from 'clarifai';
 
@@ -132,6 +132,14 @@ class App extends React.Component {
     })
   }
 
+  handleClearFields = () => {
+    this.setState({
+      input: "",
+      imageURL: "",
+      showError: "none"
+    })
+  }
+
   render() {
     const { isSignedIn, imageURL, boundary, input, route } = this.state;
     return (
@@ -143,8 +151,8 @@ class App extends React.Component {
         {route === 'home' ?
           <div>
             <Logo name={this.state.user.name} email={this.state.user.email} entries={this.state.user.entries} />
-            <Rank name={this.state.user.name} entries={this.state.user.entries} />
-            <ImageLinkForm handleDetect={this.handleDetect} handleOnChange={this.handleInput} inputValue={input} />
+            {/* <Rank name={this.state.user.name} entries={this.state.user.entries} /> */}
+            <ImageLinkForm handleDetect={this.handleDetect} handleOnChange={this.handleInput} inputValue={input} clear={this.handleClearFields} />
             <FaceRecognition image={imageURL} boundary={boundary} showError={this.state.showError} />
           </div> :
           (route === 'signIn') ?
