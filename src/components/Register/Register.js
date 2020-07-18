@@ -29,7 +29,7 @@ class Register extends React.Component {
     }
 
     onRegisterClick = async () => {
-        const resp = await fetch('http://localhost:3000/register', {
+        const resp = await fetch('https://radiant-caverns-61113.herokuapp.com/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

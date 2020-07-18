@@ -98,7 +98,7 @@ class App extends React.Component {
 
     //Clarifai API call code 
     //  app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
-    fetch(`http://localhost:3000/imageurl`, {
+    fetch(`https://radiant-caverns-61113.herokuapp.com/imageurl`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -107,7 +107,7 @@ class App extends React.Component {
     }).then(resp => resp.json())
       .then(response => {
         if (response) { //retrieve the entries of the user
-          fetch(`http://localhost:3000/image`, {
+          fetch(`https://radiant-caverns-61113.herokuapp.com/image`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
