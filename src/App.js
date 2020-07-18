@@ -8,9 +8,9 @@ import FaceRecognition from './components/FaceRecognition/FaceRecognition.js';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm.js';
 // import Rank from './components/Rank/Rank.js';
 import Particles from 'react-particles-js';
-import Clarifai from 'clarifai';
+// import Clarifai from 'clarifai';
 
-//MytAPI Face detectiion key - 474cf84726c6449bab79e6f23973b798
+//MyAPI Face detectiion key - 474cf84726c6449bab79e6f23973b798
 
 const particleParams =
 {
@@ -24,29 +24,46 @@ const particleParams =
     }
   }
 }
-const app = new Clarifai.App({
-  apiKey: '474cf84726c6449bab79e6f23973b798'
-});
+// const app = new Clarifai.App({
+//   apiKey: '474cf84726c6449bab79e6f23973b798'
+// });
+const initialState = {
+  input: "",
+  imageURL: "",
+  boundary: {},
+  route: 'signIn',
+  isSignedIn: false,
+  showError: "none",
+  user: {
+    id: '123',
+    name: 'John',
+    email: 'john@gmail.com',
+    entries: 0,
+    joined: "new Date()"
 
+  }//initialState
+}
 class App extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      input: "",
-      imageURL: "",
-      boundary: {},
-      route: 'signIn',
-      isSignedIn: false,
-      showError: "none",
-      user: {
-        id: '123',
-        name: 'John',
-        email: 'john@gmail.com',
-        entries: 0,
-        joined: "new Date()"
+    this.state = initialState
+    // {
+    //   input: "",
+    //   imageURL: "",
+    //   boundary: {},
+    //   route: 'signIn',
+    //   isSignedIn: false,
+    //   showError: "none",
+    //   user: {
+    //     id: '123',
+    //     name: 'John',
+    //     email: 'john@gmail.com',
+    //     entries: 0,
+    //     joined: "new Date()"
 
-      }
-    }
+    //   }
+    // }
+
   }
 
   handleInput = (e) => {
@@ -80,7 +97,14 @@ class App extends React.Component {
     })
 
     //Clarifai API call code 
-    app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
+    //  app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
+    fetch(`http://localhost:3000/imageurl`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        input: this.state.input
+      })
+    }).then(resp => resp.json())
       .then(response => {
         if (response) { //retrieve the entries of the user
           fetch(`http://localhost:3000/image`, {
@@ -94,20 +118,21 @@ class App extends React.Component {
             .then(res => {
               this.setState(Object.assign(this.state.user, { entries: res }))
             })
+            .catch(console.log)
         }
         this.displayFaceBox(this.calculateFaceLocation(response))
       })
       .catch(err => this.setState({ showError: "block" }));
-
-
   }
 
   onRouteChange = (route) => {
     if (route === 'signOut') {
 
-      this.setState({
-        isSignedIn: false
-      })
+      // this.setState({
+      //   isSignedIn: false
+      // })
+      this.setState(initialState)
+
     } else if (route === 'home') {
       this.setState({
         isSignedIn: true
